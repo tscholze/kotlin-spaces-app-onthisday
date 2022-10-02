@@ -19,7 +19,7 @@ Following commands are supported:
 <center><img src="docs/chat.png" /></center>
 
 ## Special thanks to
-- [David Herman](https://twitter.com/bitspittle) (Bitspittle) for helping me getting started with Kotlin
+- [David Herman](https://twitter.com/bitspittle) (Bitspittle) for helping me to get started with Kotlin
 - [Albin Larsson](https://byabbe.se/on-this-day/#/default/get__month___day__events_json) for providing an open API to easily fetch Wikipedia information
 
 ## Keep in mind
