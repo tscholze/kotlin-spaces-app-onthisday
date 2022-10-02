@@ -24,6 +24,7 @@ Following commands are supported:
 
 ## Keep in mind
 This app is purely build for having fun! All features have room for improvements or could be done more elegant. This app was and may never be meant to run in production-like environments.
+If you see any tokens, keys or secrets, you can be sure that all of these are already revoked.
 
 ## Authors
 Just me, [Tobi]([https://tscholze.github.io).
