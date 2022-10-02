@@ -75,7 +75,12 @@ class Command {
         }
 
         private fun MessageControlGroupBuilder.wikipediaButton(urlString: String) {
-            val action = PostMessageAction("a", "b")
+            val action =  NavigateUrlAction(
+                urlString,
+                withBackUrl = true,
+                openInNewTab = false
+            )
+
             button("Open Wikipedia", action, MessageButtonStyle.SECONDARY)
         }
 

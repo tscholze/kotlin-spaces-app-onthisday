@@ -12,9 +12,7 @@ Following commands are supported:
 - `otd`: Presents you the **events** on **today's** day in history
 - `otd 14.03`: Presents you the **events** on **14.03** *(dd.MM)* in history 
 - `otd 14.03 events | deaths | birth`: Presents you the **given topic** on **14.03** *(dd.MM)* in history
-
-## Missing features
-- [ ] The seen "Wikipedia" button should open the related Wikipedia page
+- Allows open Wikipedia from given message
 
 ## Message UI
 
