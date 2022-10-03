@@ -9,13 +9,18 @@ import space.jetbrains.api.runtime.types.ChannelIdentifier
 import space.jetbrains.api.runtime.types.ChatMessage
 import space.jetbrains.api.runtime.types.ProfileIdentifier
 
+// MARK: - Public Properties -
+
+/**
+ * Gets the current Space's app instance.
+ */
 val spaceAppInstance = SpaceAppInstance(
     clientId = config.getString("space.clientId"),
     clientSecret = config.getString("space.clientSecret"),
     spaceServerUrl = config.getString("space.serverUrl"),
 )
 
-val spaceHttpClient = ktorClientForSpace()
+// MARK: - Private properties -
 
 /**
  * Space Client used to call API methods in Space.
@@ -23,12 +28,13 @@ val spaceHttpClient = ktorClientForSpace()
  * authorize in Space based on clientId+clientSecret and will act on behalf of itself (not
  * on behalf of a Space user).
  */
-val spaceClient =
-    SpaceClient(
-        ktorClient = spaceHttpClient,
-        appInstance = spaceAppInstance,
-        auth = SpaceAuth.ClientCredentials()
-    )
+val spaceClient = SpaceClient(
+    ktorClient = ktorClientForSpace(),
+    appInstance = spaceAppInstance,
+    auth = SpaceAuth.ClientCredentials()
+)
+
+// MARK: - Public helpers -
 
 /**
  * Call API method in Space to send a message to the user.

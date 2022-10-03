@@ -14,6 +14,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
+/**
+ * Command manager to evaluate user's input and
+ * perform respective tasks to handle the request.
+ */
 class Command {
     companion object {
 
@@ -29,6 +33,11 @@ class Command {
 
         // MARK: - Public helper -
 
+        /**
+         * Runs the command with given payload
+         *
+         * @param payload Payload to handle.
+         */
         suspend fun runWithPayload(payload: MessagePayload) {
             val args = getArgs(payload)
 
@@ -48,26 +57,37 @@ class Command {
         // MARK: - UI Builder -
 
         private fun makeMessage(container: OnThisDay): ChatMessage {
+            // Create reply message
             return message {
+                // Outline (scope) the message
                 outline(
                     MessageOutline(
                         icon = ApiIcon("calendar"),
                         text = "Following ${container.topic.name.lowercase()} found on Wikipedia:"
                     )
                 )
+
+                // Actual content
                 section {
+
+                    // Title
                     text("On this day (${container.date}) happened:")
 
+                    // Loop throw all happenings
                     container.happenings.reversed().forEach {
+
+                        // Happening description
                         text(
                             size = MessageTextSize.SMALL,
                             content = "${it.year}:\n${it.description}",
                         )
 
+                        // Wikipedia button
                         controls {
                             wikipediaButton(it.wikipediaUrl)
                         }
 
+                        // Line / divider between all the happenings.
                         divider()
                     }
                 }
@@ -75,20 +95,24 @@ class Command {
         }
 
         private fun MessageControlGroupBuilder.wikipediaButton(urlString: String) {
+            // Create "open browser" action
             val action =  NavigateUrlAction(
                 urlString,
                 withBackUrl = true,
                 openInNewTab = false
             )
 
+            // Return configurated button
             button("Open Wikipedia", action, MessageButtonStyle.SECONDARY)
         }
 
         // MARK: - Private helper -
 
         private suspend fun requestData(topic: Topic, date: LocalDate): OnThisDay {
+            // Create url from given parameters
             val url = String.format(topic.urlFormatString, date.monthValue, date.dayOfMonth)
 
+            // Decide which endpoint has to be called.
             return when (topic) {
                 Topic.EVENTS -> {
                     val container: WikipediaEventsResponseContainer = client.get(url).body()
@@ -108,7 +132,6 @@ class Command {
         }
 
         private fun getArgs(payload: MessagePayload): OnThisDayArgs? {
-
             // Get raw args
             val rawArgs = payload.commandArguments()
                 ?.trim()
@@ -158,6 +181,12 @@ class Command {
 
     // MARK: - Args -
 
+    /**
+     * Argument class which contains all OTD parameters
+     *
+     * @property date The date (day, month) the user picked
+     * @property topic The topic of happenings the user picked
+     */
     private class OnThisDayArgs(
         val date: LocalDate,
         val topic: Topic
@@ -165,9 +194,17 @@ class Command {
 
     // MARK: - Topics -
 
+    /**
+     * Contains all available [Happening] Topics
+     */
     enum class Topic(val urlFormatString: String) {
+        /// Events like "first plane flight"
         EVENTS("https://byabbe.se/on-this-day/%d/%d/events.json"),
+
+        /// Deaths like "Steve Wozniak"
         DEATHS("https://byabbe.se/on-this-day/%d/%d/deaths.json"),
+
+        /// Births like "Albert Einstein"
         BIRTH("https://byabbe.se/on-this-day/%d/%d/births.json")
     }
 }
