@@ -1,0 +1,6 @@
+version: "2.3"
+
+services:
+    tinyserver:
+        ports:
+            - "8080:8080"
