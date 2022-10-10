@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -18,6 +20,17 @@ application {
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "io.github.tscholze.onthisday.ApplicationKt"
+    }
+    configurations["compileClasspath"].forEach { file: File ->
+        from(zipTree(file.absoluteFile))
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 
 repositories {
     mavenCentral()
