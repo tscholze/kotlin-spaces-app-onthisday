@@ -10,6 +10,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
+    id("io.ktor.plugin") version "2.1.2"
 }
 
 group = "io.github.tscholze.spaces.onthisday"
@@ -21,16 +22,11 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "io.github.tscholze.onthisday.ApplicationKt"
+ktor {
+    fatJar {
+        archiveFileName.set("fat.jar")
     }
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
-    }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-
 
 repositories {
     mavenCentral()
