@@ -19,7 +19,7 @@ fun Application.configureRouting() {
         // MARK: - GET requests -
 
         get("/") {
-            call.respondText("Hello, I'm your friendly 'on this day'-bot :).")
+            call.respondText("Hello, I'm your friendly 'on this day'-bot :). v0.4")
         }
 
         // MARK: - POST requests -
