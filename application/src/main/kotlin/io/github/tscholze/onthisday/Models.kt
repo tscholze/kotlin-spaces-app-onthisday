@@ -1,5 +1,6 @@
 package io.github.tscholze.onthisday
 
+import io.github.tscholze.onthisday.commands.OnThisDayCommand
 import kotlinx.serialization.*
 
 
@@ -26,7 +27,7 @@ data class Happening(
  * @property happenings What happened on this day for the given topic
  */
 class OnThisDay (
-    val topic: Command.Topic,
+    val topic: OnThisDayCommand.Topic,
     val date: String,
     val happenings: List<Happening>,
 ) {
@@ -36,7 +37,7 @@ class OnThisDay (
          */
         fun from(eventsResponseContainer: WikipediaEventsResponseContainer): OnThisDay {
             return OnThisDay(
-                Command.Topic.EVENTS,
+                OnThisDayCommand.Topic.EVENTS,
                 eventsResponseContainer.date,
                 eventsResponseContainer.events.map {
                     Happening(
@@ -53,7 +54,7 @@ class OnThisDay (
          */
         fun from(deathsResponseContainer: WikipediaDeathsResponseContainer): OnThisDay {
             return OnThisDay(
-                Command.Topic.DEATHS,
+                OnThisDayCommand.Topic.DEATHS,
                 deathsResponseContainer.date,
                 deathsResponseContainer.deaths.map {
                     Happening(
@@ -70,7 +71,7 @@ class OnThisDay (
          */
         fun from(birthsResponseContainer: WikipediaBirthsResponseContainer): OnThisDay {
             return OnThisDay(
-                Command.Topic.BIRTH,
+                OnThisDayCommand.Topic.BIRTH,
                 birthsResponseContainer.date,
                 birthsResponseContainer.births.map {
                     Happening(

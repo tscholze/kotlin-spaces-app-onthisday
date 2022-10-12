@@ -1,18 +1,23 @@
 package io.github.tscholze.onthisday
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.tscholze.onthisday.commands.supportedCommands
+import io.github.tscholze.onthisday.db.saveRefreshTokenData
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.launch
-import space.jetbrains.api.runtime.helpers.command
-import space.jetbrains.api.runtime.helpers.readPayload
-import space.jetbrains.api.runtime.helpers.verifyWithPublicKey
+import space.jetbrains.api.ExperimentalSpaceSdkApi
+import space.jetbrains.api.runtime.Space
+import space.jetbrains.api.runtime.helpers.*
+import space.jetbrains.api.runtime.types.InitPayload
 import space.jetbrains.api.runtime.types.ListCommandsPayload
 import space.jetbrains.api.runtime.types.MessagePayload
+import space.jetbrains.api.runtime.types.RefreshTokenPayload
 
+@OptIn(ExperimentalSpaceSdkApi::class)
 fun Application.configureRouting() {
     routing {
 
@@ -25,41 +30,63 @@ fun Application.configureRouting() {
         // MARK: - POST requests -
 
         post("api/space") {
-            // Get required information from call
-            val body = call.receiveText()
-            val signature = call.request.header("X-Space-Public-Key-Signature")
-            val timestamp = call.request.header("X-Space-Timestamp")?.toLongOrNull()
 
-            // Ensure call is authorized
-            if (signature.isNullOrBlank() || timestamp == null ||
-                !spaceClient.verifyWithPublicKey(body, timestamp, signature)
-            ) {
-                call.respond(HttpStatusCode.Unauthorized)
-                return@post
+            val ktorRequestAdapter = object : RequestAdapter {
+                override suspend fun receiveText() =
+                    call.receiveText()
+
+                override fun getHeader(headerName: String) =
+                    call.request.header(headerName)
+
+                override suspend fun respond(httpStatusCode: Int, body: String) =
+                    call.respond(HttpStatusCode.fromValue(httpStatusCode), body)
             }
 
-            // Handle different kinds of payloads
-            when (val payload = readPayload(body)) {
-                // 1. ListCommandsPayload
-                // aka Space requests the list of supported commands
-                is ListCommandsPayload -> {
-                    //
-                    call.respondText(
-                        ObjectMapper().writeValueAsString(getSupportedCommands()),
-                        ContentType.Application.Json
-                    )
-                }
-                // 2. MessagePayload
-                // aka user sent a message to the application
-                is MessagePayload -> {
-                    val commandName = payload.command()
-                    val command = supportedCommands.find { it.name == commandName }
-                    if (command == null) {
-                        runHelpCommand(payload)
-                    } else {
-                        launch { command.run(payload) }
+            Space.processPayload(ktorRequestAdapter, spaceHttpClient, AppInstanceStorage) { payload ->
+
+                val client = clientWithClientCredentials()
+
+                when (payload) {
+                    // Handle InitPayload
+                    is InitPayload -> {
+                        setUiExtensions()
+                        SpaceHttpResponse.RespondWithOk
                     }
-                    call.respond(HttpStatusCode.OK, "")
+
+                    // Handle RefreshTokenPayload
+                    is RefreshTokenPayload -> {
+                        saveRefreshTokenData(payload)
+                        SpaceHttpResponse.RespondWithOk
+                    }
+
+                    // Handle ListCommandsPayload
+                    is ListCommandsPayload -> {
+                        call.respondText(
+                            ObjectMapper().writeValueAsString(supportedCommands(client).map { it.toSpaceCommand() }),
+                            ContentType.Application.Json
+                        )
+                        SpaceHttpResponse.RespondWithOk
+                    }
+
+                    // Handle MessagePayload
+                    is MessagePayload -> {
+                        val command = supportedCommands(client)
+                            .find { it.name == payload.command() }
+
+                        if (command == null) {
+                            runHelpCommand(payload.userId)
+                        } else {
+                            launch { command.run(payload) }
+                        }
+                        call.respond(HttpStatusCode.OK, "")
+                        SpaceHttpResponse.RespondWithOk
+                    }
+
+                    // Handle everything else
+                    else -> {
+                        call.respond(HttpStatusCode.OK)
+                        SpaceHttpResponse.RespondWithOk
+                    }
                 }
             }
         }
