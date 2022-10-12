@@ -15,7 +15,7 @@ import kotlinx.serialization.*
  */
 data class Happening(
     val year: String,
-    val description: String,
+    val description: String? = null,
     val wikipediaUrl: String
 )
 
