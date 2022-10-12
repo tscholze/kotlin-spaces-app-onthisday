@@ -85,7 +85,7 @@ class OnThisDayCommand {
                         // Happening description
                         text(
                             size = MessageTextSize.SMALL,
-                            content = "${it.year}:\n${it.description}",
+                            content = "${it.year}:\n${it.description ?: "No information found."}",
                         )
 
                         // Wikipedia button
