@@ -1,13 +1,10 @@
-package io.github.tscholze.onthisday
+package io.github.tscholze.onthisday.commands
 
+import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.helpers.message
 import space.jetbrains.api.runtime.types.*
 
-suspend fun runHelpCommand(payload: MessagePayload) {
-    sendMessage(payload.userId, helpMessage())
-}
-
-fun helpMessage(): ChatMessage {
+fun helpMessage(client: SpaceClient): ChatMessage {
     return message {
         MessageOutline(
             icon = ApiIcon("calendar"),
@@ -16,7 +13,7 @@ fun helpMessage(): ChatMessage {
         section {
             text("List of available commands", MessageStyle.PRIMARY)
             fields {
-                supportedCommands.forEach {
+                supportedCommands(client).forEach {
                     field(it.name, it.info)
                 }
             }

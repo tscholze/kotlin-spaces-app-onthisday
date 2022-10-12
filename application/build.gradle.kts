@@ -5,6 +5,9 @@ val kotlin_version: String by project
 val logback_version: String by project
 val space_sdk_version: String by project
 val jackson_version: String by project
+val exposed_version: String by project
+val h2_version: String by project
+
 
 plugins {
     application
@@ -44,6 +47,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+
+    // Db
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.xerial:sqlite-jdbc:3.30.1")
 
     // Spaces SDK
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")

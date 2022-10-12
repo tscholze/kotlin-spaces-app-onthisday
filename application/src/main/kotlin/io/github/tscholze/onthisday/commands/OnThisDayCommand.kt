@@ -1,14 +1,20 @@
-package io.github.tscholze.onthisday
+package io.github.tscholze.onthisday.commands
 
+import io.github.tscholze.onthisday.OnThisDay
+import io.github.tscholze.onthisday.WikipediaBirthsResponseContainer
+import io.github.tscholze.onthisday.WikipediaDeathsResponseContainer
+import io.github.tscholze.onthisday.WikipediaEventsResponseContainer
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
+import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.helpers.MessageControlGroupBuilder
 import space.jetbrains.api.runtime.helpers.commandArguments
 import space.jetbrains.api.runtime.helpers.message
+import space.jetbrains.api.runtime.resources.chats
 import space.jetbrains.api.runtime.types.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -18,7 +24,7 @@ import java.time.format.DateTimeParseException
  * Command manager to evaluate user's input and
  * perform respective tasks to handle the request.
  */
-class Command {
+class OnThisDayCommand {
     companion object {
 
         // MARK: - Private constants -
@@ -38,12 +44,12 @@ class Command {
          *
          * @param payload Payload to handle.
          */
-        suspend fun runWithPayload(payload: MessagePayload) {
+        suspend fun runWithPayload(client: SpaceClient, payload: MessagePayload) {
             val args = getArgs(payload)
 
             // Handle as error if arg parsing failed.
             if (args == null) {
-                sendMessage(payload.userId, helpMessage())
+                sendMessage(client, payload.userId, helpMessage(client))
                 return
             }
 
@@ -51,7 +57,7 @@ class Command {
             val onThisDay = requestData(args.topic, args.date)
 
             // Send populated message to the user
-            sendMessage(payload.userId, makeMessage(onThisDay))
+            sendMessage(client, payload.userId, makeMessage(onThisDay))
         }
 
         // MARK: - UI Builder -
@@ -79,7 +85,7 @@ class Command {
                         // Happening description
                         text(
                             size = MessageTextSize.SMALL,
-                            content = "${it.year}:\n${it.description}",
+                            content = "${it.year}:\n${it.description ?: "No information found."}",
                         )
 
                         // Wikipedia button
