@@ -1,4 +1,4 @@
-package io.github.tscholze.onthisday
+package io.github.tscholze.onthisday.network
 
 import io.github.tscholze.onthisday.commands.helpMessage
 import io.github.tscholze.onthisday.commands.sendMessage
