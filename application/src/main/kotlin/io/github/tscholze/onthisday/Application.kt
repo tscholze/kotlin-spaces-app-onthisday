@@ -1,28 +1,27 @@
 package io.github.tscholze.onthisday
 
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import io.github.tscholze.onthisday.db.configureDatabase
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import space.jetbrains.api.runtime.ktorClientForSpace
 
 // MARK: - App-wide properties -
 
-val config: Config by lazy { ConfigFactory.load() }
-val log: Logger = LoggerFactory.getLogger("ApplicationKt")
+val spaceHttpClient = ktorClientForSpace()
 
 // MARK: - Main -
 fun main() {
-    // Ensure client id and secret are set
-    if (spaceAppInstance.clientId.isEmpty() || spaceAppInstance.clientSecret.isEmpty()) {
-        log.error("Please specify application credentials in src/main/resources/application.conf")
-        return
-    }
 
     // Start webserver
     embeddedServer(Netty, port = 8080) {
+
+        // 1.1 Init database connection
+        configureDatabase()
+
+        // 1.2 Setup ktor routing
         configureRouting()
     }.start(wait = true)
 }

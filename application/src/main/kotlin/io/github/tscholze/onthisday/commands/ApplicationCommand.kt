@@ -1,13 +1,9 @@
-package io.github.tscholze.onthisday
+package io.github.tscholze.onthisday.commands
 
+import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.types.CommandDetail
-import space.jetbrains.api.runtime.types.Commands
-import space.jetbrains.api.runtime.types.ListCommandsPayload
 import space.jetbrains.api.runtime.types.MessagePayload
 
-/**
- * A command that the application can execute.
- */
 class ApplicationCommand(
     val name: String,
     val info: String,
@@ -20,26 +16,16 @@ class ApplicationCommand(
     fun toSpaceCommand() = CommandDetail(name, info)
 }
 
-val supportedCommands = listOf(
+fun supportedCommands(client: SpaceClient) = listOf(
     // otd command.
     ApplicationCommand(
         "otd",
         "To get 'on this day' information.\nYou can specify the date (dd.MM) or date and topic (events, birth, deaths)",
-    ) { payload -> Command.runWithPayload(payload) },
+    ) { payload -> OnThisDayCommand.runWithPayload(client, payload) },
 
     // Help command.
     ApplicationCommand(
         "help",
         "Show this help",
-    ) { payload -> runHelpCommand(payload) },
-)
-
-/**
- * Response to the [ListCommandsPayload]. Space will display the returned commands as commands supported
- * by your application.
- */
-fun getSupportedCommands() = Commands(
-    supportedCommands.map {
-        it.toSpaceCommand()
-    }
+    ) { payload -> sendMessage(client, payload.userId, helpMessage(client)) },
 )
