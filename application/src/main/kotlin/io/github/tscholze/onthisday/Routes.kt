@@ -3,6 +3,8 @@ package io.github.tscholze.onthisday
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.tscholze.onthisday.commands.supportedCommands
 import io.github.tscholze.onthisday.db.saveRefreshTokenData
+import io.github.tscholze.onthisday.network.runHelpCommand
+import io.github.tscholze.onthisday.network.setUiExtensions
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

@@ -142,7 +142,7 @@ data class WikipediaBirthsResponseContainer (
 @Serializable
 data class Event (
     val year: String,
-    val description: String,
+    val description: String? = null,
     val wikipedia: List<Wikipedia>
 )
 
@@ -156,7 +156,7 @@ data class Event (
 @Serializable
 data class Death (
     val year: String,
-    val description: String,
+    val description: String? = null,
     val wikipedia: List<Wikipedia>
 )
 
@@ -170,7 +170,7 @@ data class Death (
 @Serializable
 data class Birth (
     val year: String,
-    val description: String,
+    val description: String? = null,
     val wikipedia: List<Wikipedia>
 )
 

@@ -52,7 +52,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-    implementation("com.h2database:h2:$h2_version")
+    implementation("org.xerial:sqlite-jdbc:3.30.1")
 
     // Spaces SDK
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
