@@ -39,7 +39,9 @@ class OnThisDay (
             return OnThisDay(
                 OnThisDayCommand.Topic.EVENTS,
                 eventsResponseContainer.date,
-                eventsResponseContainer.events.map {
+                eventsResponseContainer.events
+                    .reversed()
+                    .map {
                     Happening(
                         it.year,
                         it.description,
