@@ -12,6 +12,6 @@ fun configureDatabase() {
     TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
 
     transaction {
-        SchemaUtils.createDatabase("data.db")
+        SchemaUtils.createDatabase("data")
     }
 }
