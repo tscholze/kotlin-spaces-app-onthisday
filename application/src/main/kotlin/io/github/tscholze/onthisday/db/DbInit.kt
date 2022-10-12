@@ -13,5 +13,7 @@ fun configureDatabase() {
 
     transaction {
         SchemaUtils.createDatabase("data")
+        SchemaUtils.create(AppInstallation)
+        SchemaUtils.create(RefreshToken)
     }
 }
