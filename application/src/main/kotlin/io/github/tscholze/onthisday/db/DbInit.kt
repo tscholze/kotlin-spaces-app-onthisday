@@ -8,10 +8,10 @@ import java.sql.Connection
 
 fun configureDatabase() {
 
-    Database.connect("jdbc:sqlite:/data/data.db", "org.sqlite.JDBC")
+    Database.connect("jdbc:sqlite:data.db", "org.sqlite.JDBC")
     TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
 
     transaction {
-        SchemaUtils.createMissingTablesAndColumns(AppInstallation, RefreshToken)
+        SchemaUtils.createDatabase("data.db")
     }
 }
