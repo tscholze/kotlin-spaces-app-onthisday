@@ -2,7 +2,7 @@
 > On this day is a JetBrains Space app which shows Wikipedia-based information about what happened on that or given day
 
 ## tl;dr
-"On this day" is my beginner-level submission to [JetBrains Space App Contest](https://blog.jetbrains.com/space/2022/08/09/space-apps-contest/) and also a real-world "Kotlin learning" exercise.
+"On this day" is my beginner-level submission to [JetBrains Space App Contest](https://blog.jetbrains.com/space/2022/08/09/space-apps-contest/) and also a real-world "Kotlin learning" exercise. This is not meant to be a real word bot that lives forever.
 
 ## What?
 This is my very first JetBrains Space application. It's mainly a simple chat bot that requests data from [Albin Larsson](https://byabbe.se/)'s [open Wikipedia API](https://byabbe.se/on-this-day/#/default/get__month___day__events_json) and renders it in a DM reply.
