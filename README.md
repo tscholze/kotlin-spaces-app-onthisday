@@ -7,6 +7,8 @@
 ## What?
 This is my very first JetBrains Space application. It's mainly a simple chat bot that requests data from [Albin Larsson](https://byabbe.se/)'s [open Wikipedia API](https://byabbe.se/on-this-day/#/default/get__month___day__events_json) and renders it in a DM reply.
 
+You can install it from the [JetBrains Plugin Marketstore page](https://plugins.jetbrains.com/plugin/20132-on-this-day--a-conversation-starter-bot)
+
 ## Features
 Following commands are supported:
 - `otd`: Presents you the **events** on **today's** day in history
