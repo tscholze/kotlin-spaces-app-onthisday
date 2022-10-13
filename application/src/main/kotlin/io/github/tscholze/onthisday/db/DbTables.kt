@@ -2,14 +2,20 @@ package io.github.tscholze.onthisday.db
 
 import org.jetbrains.exposed.sql.Table
 
+/**
+ * Table: `app_installation`
+ */
 object AppInstallation : Table("app_installation") {
     val clientId = varchar("client_id", 36).index(isUnique = true)
     val clientSecret = varchar("client_secret", 64)
     val serverUrl = varchar("server_url", 256)
 
     override val primaryKey = PrimaryKey(clientId)
-}
+    }
 
+/*
+ * Table: `refresh_token`
+ */
 object RefreshToken : Table("refresh_token") {
     val clientId = varchar("client_id", 36)
     val userId = varchar("user_id", 20)

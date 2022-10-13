@@ -1,20 +1,11 @@
 package io.github.tscholze.onthisday.commands
 
-import io.github.tscholze.onthisday.OnThisDay
-import io.github.tscholze.onthisday.WikipediaBirthsResponseContainer
-import io.github.tscholze.onthisday.WikipediaDeathsResponseContainer
-import io.github.tscholze.onthisday.WikipediaEventsResponseContainer
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
+import io.github.tscholze.onthisday.models.OnThisDay
+import io.github.tscholze.onthisday.network.services.ByabbeService
 import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.helpers.MessageControlGroupBuilder
 import space.jetbrains.api.runtime.helpers.commandArguments
 import space.jetbrains.api.runtime.helpers.message
-import space.jetbrains.api.runtime.resources.chats
 import space.jetbrains.api.runtime.types.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,12 +21,6 @@ class OnThisDayCommand {
         // MARK: - Private constants -
 
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-
-        private val client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json()
-            }
-        }
 
         // MARK: - Public helper -
 
@@ -54,7 +39,7 @@ class OnThisDayCommand {
             }
 
             // Request data from remote.
-            val onThisDay = requestData(args.topic, args.date)
+            val onThisDay = ByabbeService.requestData(args.topic, args.date)
 
             // Send populated message to the user
             sendMessage(client, payload.userId, makeMessage(onThisDay))
@@ -112,31 +97,6 @@ class OnThisDayCommand {
             button("Open Wikipedia", action, MessageButtonStyle.SECONDARY)
         }
 
-        // MARK: - Private helper -
-
-        private suspend fun requestData(topic: Topic, date: LocalDate): OnThisDay {
-            // Create url from given parameters
-            val url = String.format(topic.urlFormatString, date.monthValue, date.dayOfMonth)
-
-            // Decide which endpoint has to be called.
-            return when (topic) {
-                Topic.EVENTS -> {
-                    val container: WikipediaEventsResponseContainer = client.get(url).body()
-                    OnThisDay.from(container)
-                }
-
-                Topic.BIRTH -> {
-                    val container: WikipediaBirthsResponseContainer = client.get(url).body()
-                    OnThisDay.from(container)
-                }
-
-                else -> {
-                    val container: WikipediaDeathsResponseContainer = client.get(url).body()
-                    OnThisDay.from(container)
-                }
-            }
-        }
-
         private fun getArgs(payload: MessagePayload): OnThisDayArgs? {
             // Get raw args
             val rawArgs = payload.commandArguments()
@@ -149,7 +109,7 @@ class OnThisDayCommand {
             //  - today
             //  - EVENTS
             if (rawArgs.count() == 0) {
-                return OnThisDayArgs(LocalDate.now(), Topic.EVENTS)
+                return OnThisDayArgs(LocalDate.now(), ByabbeService.Companion.Topic.EVENTS)
             }
 
             // If 1 arg is given, interpret it as:
@@ -158,7 +118,7 @@ class OnThisDayCommand {
             else if (rawArgs.count() == 1) {
                 return try {
                     val date = LocalDate.parse("${rawArgs.first()}.2022", DATE_FORMATTER)
-                    return OnThisDayArgs(date, Topic.EVENTS)
+                    return OnThisDayArgs(date, ByabbeService.Companion.Topic.EVENTS)
                 } catch (error: DateTimeParseException) {
                     null
                 }
@@ -170,7 +130,7 @@ class OnThisDayCommand {
             else if (rawArgs.count() == 2) {
                 return try {
                     val date = LocalDate.parse("${rawArgs.first()}.2022", DATE_FORMATTER)
-                    val topic = Topic.valueOf(rawArgs.elementAt(1).uppercase())
+                    val topic = ByabbeService.Companion.Topic.valueOf(rawArgs.elementAt(1).uppercase())
                     return OnThisDayArgs(date, topic)
                 } catch (error: Exception) {
                     null
@@ -195,22 +155,6 @@ class OnThisDayCommand {
      */
     private class OnThisDayArgs(
         val date: LocalDate,
-        val topic: Topic
+        val topic: ByabbeService.Companion.Topic
     )
-
-    // MARK: - Topics -
-
-    /**
-     * Contains all available [Happening] Topics
-     */
-    enum class Topic(val urlFormatString: String) {
-        /// Events like "first plane flight"
-        EVENTS("https://byabbe.se/on-this-day/%d/%d/events.json"),
-
-        /// Deaths like "Steve Wozniak"
-        DEATHS("https://byabbe.se/on-this-day/%d/%d/deaths.json"),
-
-        /// Births like "Albert Einstein"
-        BIRTH("https://byabbe.se/on-this-day/%d/%d/births.json")
-    }
 }

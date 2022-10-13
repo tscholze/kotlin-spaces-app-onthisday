@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "io.github.tscholze.spaces.onthisday"
-version = "0.0.1"
+version = "0.6.0"
 application {
     mainClass.set("io.github.tscholze.onthisday.ApplicationKt")
 

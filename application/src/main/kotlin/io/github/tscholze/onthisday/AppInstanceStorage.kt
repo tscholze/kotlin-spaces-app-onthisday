@@ -8,6 +8,9 @@ import space.jetbrains.api.ExperimentalSpaceSdkApi
 import space.jetbrains.api.runtime.SpaceAppInstance
 import space.jetbrains.api.runtime.helpers.SpaceAppInstanceStorage
 
+/**
+ * Storage helper to load application instances.
+ */
 @OptIn(ExperimentalSpaceSdkApi::class)
 object AppInstanceStorage : SpaceAppInstanceStorage {
     override suspend fun loadAppInstance(clientId: String): SpaceAppInstance? {
@@ -24,6 +27,9 @@ object AppInstanceStorage : SpaceAppInstanceStorage {
         }
     }
 
+    /**
+     * Storage helper to save application instances.
+     */
     override suspend fun saveAppInstance(appInstance: SpaceAppInstance): Unit = transaction {
         with(AppInstallation) {
             replace {

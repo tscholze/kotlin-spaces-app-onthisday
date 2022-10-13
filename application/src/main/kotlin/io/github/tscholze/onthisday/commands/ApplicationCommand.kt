@@ -16,6 +16,9 @@ class ApplicationCommand(
     fun toSpaceCommand() = CommandDetail(name, info)
 }
 
+/**
+ * Gets all supported commands which the user can pick from.
+ */
 fun supportedCommands(client: SpaceClient) = listOf(
     // otd command.
     ApplicationCommand(

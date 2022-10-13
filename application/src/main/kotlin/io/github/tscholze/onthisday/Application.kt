@@ -14,10 +14,8 @@ val spaceHttpClient = ktorClientForSpace()
 
 // MARK: - Main -
 fun main() {
-
     // Start webserver
     embeddedServer(Netty, port = 8080) {
-
         // 1.1 Init database connection
         configureDatabase()
 
