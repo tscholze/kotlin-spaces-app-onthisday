@@ -26,6 +26,7 @@ Following commands are supported:
 
 ## Special thanks to
 - [David Herman](https://twitter.com/bitspittle) (Bitspittle) for helping me to get started with Kotlin
+- [Phil Skorpil](https://rude.one) for helping me with hosting and deployment
 - [Albin Larsson](https://byabbe.se/on-this-day/#/default/get__month___day__events_json) for providing an open API to easily fetch Wikipedia information
 
 ## Keep in mind
