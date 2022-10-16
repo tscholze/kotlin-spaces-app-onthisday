@@ -3,6 +3,12 @@
 # kotlin-spaces-app-onthisday
 > On this day is a JetBrains Space app which shows Wikipedia-based information about what happened on that or given day
 
+## Status
+|Service|Status|
+|-|-|
+|Gradle build|[![Java CI with Gradle](https://github.com/tscholze/kotlin-spaces-app-onthisday/actions/workflows/build.yml/badge.svg)](https://github.com/tscholze/kotlin-spaces-app-onthisday/actions/workflows/build.yml)|
+|Qodana check|[![Qodana](https://github.com/tscholze/kotlin-spaces-app-onthisday/actions/workflows/qodana.yml/badge.svg)](https://github.com/tscholze/kotlin-spaces-app-onthisday/actions/workflows/qodana.yml)|
+
 ## tl;dr
 "On this day" is my beginner-level submission to [JetBrains Space App Contest](https://blog.jetbrains.com/space/2022/08/09/space-apps-contest/) and also a real-world "Kotlin learning" exercise. This is not meant to be a real word bot that lives forever.
 
